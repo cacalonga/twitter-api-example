@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="jumbotron">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">count</th>
+                    <th scope="col">id</th>
+                    <th scope="col">Created_at</th>
+                    <th scope="col">Tweet</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#each tweetList as |tw key|}}
+                <tr>
+                    <td>{{key}}</td>
+                    <td>{{tw.id}}</td>
+                    <td>{{tw.created_at}}</td>
+                    <td>{{tw.text}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    setInterval(function () {
+        $.ajax({
+            type: "POST",
+            url: "/str",
+            data: { twtClr: '-1' },
+            success: function (res) {
+                if (res.tweets != '-1') {
+                    $('.jumbotron').append('<p>' + res.tweets.text + '</p>');
+                    console.log(res.tweets);
+                }
+            }
+        });
+    }, 2000);
+
+</script>

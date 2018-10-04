@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="jumbotron">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">count</th>
+                    <th scope="col">id</th>
+                    <th scope="col">Created_at</th>
+                    <th scope="col">Tweet</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#each listDummyDB as |ins key|}}
+                <tr>
+                    <td>{{key}}</td>
+                    <td>{{ins.id}}</td>
+                    <td id="date">{{ins.created_time}}</td>
+                    <td>{{ins.caption.text}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        var date = $('#date').text();
+        date = parseInt(date);
+        date = new Date(date);
+        $('#date').text(date);
+    })
+
+    setInterval(function () {
+        $.ajax({
+            type: "POST",
+            url: "insta/str",
+            data: { instaClr: '-1' },
+            success: function (res) {
+                if (res.instaStream != '-1') {
+                $('.jumbotron').append('<p>' + res.instaStream.caption.text + '</p>');
+                }
+            }
+        });
+    }, 3000);
+
+</script>

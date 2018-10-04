@@ -1,0 +1,74 @@
+{{#section "head"}}
+<link rel="stylesheet" href="/stylesheets/wschat.css">
+{{/section}}
+<div class="container">
+    <div class="textarea"></div>
+    <div class="textfield">
+        <input id="txt" type="text" name="stxt">
+        <button id="btn" type="button">Send</button>
+    </div>
+</div>
+<div id="userlist">
+    <p></p>
+</div>
+
+
+<script>
+
+    var name = "name";
+    control();
+    function control(msg) {
+        if (msg) { alert(msg) }
+        name = prompt("Kullanıcı Adı Giriniz").trim();
+        if (name === "") {
+            control("Lütfen kullanıcı adınızı giriniz")
+        }
+    }
+
+    var sock = new WebSocket("ws://localhost:3000/wschat");
+    sock.onopen = function () {
+        //alert("socket conneted succesfully");
+        sock.send(JSON.stringify({
+            type: "name",
+            data: name
+        }));
+    }
+    sock.onmessage = function (event) {
+        console.log(JSON.parse(event.data));
+        var otherclient = JSON.parse(event.data);
+        $(".textarea").append('<div class="commentother"><p></p></div><div class="clear"></div>');
+        $(".textarea .commentother p:last").text(otherclient.name + " : " + otherclient.data);
+
+        //$("#userlist p").text(otherclient.listdata);
+        $(".textarea").animate({scrollTop: $(".textarea").prop("scrollHeight")},1000);
+        //var d = $('.textarea');
+        //d.scrollTop(d.prop("scrollHeight"));
+    }
+    $("#txt").keydown(function (event) {
+        if (event.which == 13) {
+            sendMessage();
+        }
+    });
+
+    $("#btn").click(function () {
+        sendMessage();
+    });
+
+    function sendMessage() {
+        var comment = $("#txt").val()
+        if (comment !== "") {
+            sock.send(JSON.stringify({
+                type: "message",
+                data: comment
+            }));
+            $(".textarea").append('<div class="comment"><p></p></div><div class="clear"></div>');
+            $(".textarea .comment p:last").text("You : " + comment);
+            $("#txt").val('');
+             $(".textarea").animate({scrollTop: $(".textarea").prop("scrollHeight")},1000);
+            //var d = $('.textarea');
+            //d.scrollTop(d.prop("scrollHeight"));
+        }
+    }
+    $("#txt").focus();
+
+</script>
