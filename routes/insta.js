@@ -22,7 +22,7 @@ stream.on('messages', (messages) => {
 
 
 stream.on('error', (err) => {
-    console.log(err);
+   //console.log(err);
 });
 
 router.post('/str', function (req, res, next) {
